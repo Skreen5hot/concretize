@@ -93,12 +93,20 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    include: ['tests/**/*.test.ts'],
+    exclude: [
+      'node_modules/**',
+      'src/test-framework/**',
+      '**/*.d.ts',
+      '**/*.config.*',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/**',
         'tests/**',
+        'src/test-framework/**',
         '**/*.d.ts',
         '**/*.config.*',
         '**/mockData/**',

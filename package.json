@@ -1,22 +1,26 @@
 {
-  "name": "agentic-project-template",
-  "version": "1.0.0",
-  "description": "Agentic project baseline template with Concepts + Synchronizations architecture and comprehensive testing frameworks",
-  "main": "src/index.js",
+  "name": "concretize",
+  "version": "2.0.0",
+  "description": "Document to BFO Knowledge Graph PWA - Transform Word documents into ontologically rigorous RDF knowledge graphs",
   "type": "module",
   "scripts": {
-    "test": "node run-tests.js",
-    "test:ui": "cd ui-test-framework && npm test",
-    "test:all": "npm test && npm run test:ui",
-    "security-check": "npm audit --audit-level=high"
+    "test": "npm run test:pwa",
+    "test:pwa": "cd pwa && npm test",
+    "test:ui": "cd pwa/src/test-framework && npm test",
+    "test:all": "npm run test:pwa && npm run test:ui",
+    "build": "npm run build:pwa",
+    "build:pwa": "cd pwa && npm run build",
+    "dev": "npm run dev:pwa",
+    "dev:pwa": "cd pwa && npm run dev"
   },
   "keywords": [
-    "template",
-    "agentic-development",
-    "concepts-synchronizations",
-    "testing-framework",
-    "ai-agent",
-    "modular-architecture"
+    "bfo",
+    "knowledge-graph",
+    "ontology",
+    "rdf",
+    "pwa",
+    "document-processing",
+    "semantic-web"
   ],
   "author": "",
   "license": "MIT",
