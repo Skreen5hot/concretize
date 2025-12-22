@@ -83,15 +83,16 @@ cd pwa && npm run build
 ## Recommended Actions
 
 ### ✅ Completed Actions
-1. ✅ PWA CI workflow is ready
+1. ✅ PWA CI workflow is ready (with deployment to GitHub Pages)
 2. ✅ PWA tests pass locally (76/76)
 3. ✅ Removed failing gitDataPOC tests from legacy CI
-4. ✅ Both CI workflows should now pass
+4. ✅ Removed gitDataPOC deployment from ci.yml (was trying to copy non-existent directory)
+5. ✅ Consolidated deployment to pwa-ci.yml only (no deployment conflicts)
 
 ### Ready for Next Push
-- PWA CI will run automatically on changes to `pwa/**`
-- Legacy CI will run framework unit tests (no longer has gitDataPOC failures)
-- All tests passing locally and in CI
+- PWA CI will run automatically on changes to `pwa/**` and deploy to GitHub Pages
+- Legacy CI will run framework unit tests only (no deployment)
+- All tests passing locally, both workflows ready for CI
 
 ---
 
