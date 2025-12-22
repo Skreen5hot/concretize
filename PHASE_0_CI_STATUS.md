@@ -40,8 +40,12 @@ cd pwa && npm run build
 - **Status**: Clean separation between old framework tests and new PWA tests
 
 ### Current Workflow Structure
-- `ci.yml` - Legacy ui-test-framework tests (framework unit tests only)
-- `pwa-ci.yml` - New PWA tests (Phase 0+, will run on next push)
+- `ci.yml` - Legacy framework tests + **PWA deployment**
+  - Runs on all pushes to main/dev
+  - Deploys PWA to GitHub Pages (main branch only)
+- `pwa-ci.yml` - PWA testing and validation
+  - Runs when `pwa/**` files change
+  - No deployment (handled by ci.yml)
 
 ---
 
@@ -83,15 +87,19 @@ cd pwa && npm run build
 ## Recommended Actions
 
 ### ✅ Completed Actions
-1. ✅ PWA CI workflow is ready (with deployment to GitHub Pages)
+1. ✅ PWA CI workflow configured for testing and validation
 2. ✅ PWA tests pass locally (76/76)
 3. ✅ Removed failing gitDataPOC tests from legacy CI
-4. ✅ Removed gitDataPOC deployment from ci.yml (was trying to copy non-existent directory)
-5. ✅ Consolidated deployment to pwa-ci.yml only (no deployment conflicts)
+4. ✅ Fixed deployment in ci.yml to build and deploy PWA (not gitDataPOC)
+5. ✅ Consolidated deployment to ci.yml only (runs on all main pushes)
 
 ### Ready for Next Push
-- PWA CI will run automatically on changes to `pwa/**` and deploy to GitHub Pages
-- Legacy CI will run framework unit tests only (no deployment)
+- `ci.yml` runs on all pushes to main/dev:
+  - Tests: Legacy framework unit tests
+  - **Deploy**: Builds and deploys PWA to GitHub Pages (main only)
+- `pwa-ci.yml` runs when `pwa/**` changes:
+  - Tests: TypeScript check, unit tests, coverage
+  - Build: Verification build (no deployment to avoid conflicts)
 - All tests passing locally, both workflows ready for CI
 
 ---
