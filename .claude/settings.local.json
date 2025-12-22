@@ -27,7 +27,8 @@
       "Bash(git rm:*)",
       "Bash(npm install:*)",
       "Bash(node --test:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

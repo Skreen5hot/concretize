@@ -1,0 +1,117 @@
+# .github/workflows/pwa-ci.yml
+# CI/CD workflow for Concretize PWA
+
+name: PWA CI & Deploy
+
+on:
+  push:
+    branches: ["main", "dev"]
+    paths:
+      - 'pwa/**'
+      - '.github/workflows/pwa-ci.yml'
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'pwa/**'
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'pwa/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./pwa
+        run: npm ci
+
+      - name: Run TypeScript type checking
+        working-directory: ./pwa
+        run: npx tsc --noEmit
+
+      - name: Run unit tests
+        working-directory: ./pwa
+        run: npm test -- --run --reporter=verbose
+
+      - name: Run tests with coverage
+        working-directory: ./pwa
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./pwa/coverage/coverage-final.json
+          flags: pwa
+          name: pwa-coverage
+
+      - name: Build PWA
+        working-directory: ./pwa
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Check build output
+        working-directory: ./pwa
+        run: |
+          echo "Build completed successfully"
+          ls -lah dist/
+          du -sh dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pwa-build-${{ github.sha }}
+          path: pwa/dist/
+          retention-days: 7
+
+  # Deploy to GitHub Pages (only on main branch)
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: test-and-build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: pwa-build-${{ github.sha }}
+          path: ./dist
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Add deployment summary
+        run: |
+          echo "## 🚀 Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "PWA deployed to GitHub Pages:" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY

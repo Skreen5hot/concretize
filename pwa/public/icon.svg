@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#1a73e8"/>
+
+  <!-- Document icon -->
+  <path d="M160 120h140l60 60v212a20 20 0 01-20 20H160a20 20 0 01-20-20V140a20 20 0 0120-20z"
+        fill="#fff" stroke="#1a73e8" stroke-width="4"/>
+
+  <!-- Folded corner -->
+  <path d="M300 120v60h60" fill="#d0e5ff" stroke="#1a73e8" stroke-width="4"/>
+
+  <!-- Graph nodes -->
+  <circle cx="200" cy="250" r="15" fill="#ffc107"/>
+  <circle cx="280" cy="220" r="15" fill="#28a745"/>
+  <circle cx="280" cy="290" r="15" fill="#dc3545"/>
+
+  <!-- Graph edges -->
+  <line x1="215" y1="245" x2="265" y2="225" stroke="#fff" stroke-width="3"/>
+  <line x1="215" y1="255" x2="265" y2="285" stroke="#fff" stroke-width="3"/>
+  <line x1="280" y1="235" x2="280" y2="275" stroke="#fff" stroke-width="3"/>
+</svg>

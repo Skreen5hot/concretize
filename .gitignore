@@ -1,1 +1,45 @@
+# Test results
 unit-test-results.json
+
+# Dependencies
+node_modules
+
+# PWA Build outputs
+pwa/dist
+pwa/.vite
+pwa/dist-ssr
+pwa/*.local
+
+# PWA Coverage
+pwa/coverage
+pwa/.nyc_output
+
+# PWA Logs
+pwa/logs
+pwa/*.log
+pwa/npm-debug.log*
+pwa/yarn-debug.log*
+pwa/yarn-error.log*
+pwa/pnpm-debug.log*
+pwa/lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+.cache
