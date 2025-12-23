@@ -12,13 +12,16 @@
 
 import { documentIngestConcept } from '../concepts/documentIngestConcept';
 import { eventBus } from '../utils/eventBus';
-import type { StructureReadyEvent } from '../types/core';
+import type { StructureReadyEvent, DocumentLoadedEvent } from '../types/core';
+import { exportDocumentToJSONLD, downloadJSONLD } from '../utils/jsonld';
 
 /**
  * Document Upload Component
  */
 export class DocumentUpload {
   private container: HTMLElement | null = null;
+  private currentJSONLD: Record<string, unknown> | null = null;
+  private currentMetadata: DocumentLoadedEvent['metadata'] | null = null;
 
   /**
    * Render the upload interface
@@ -78,16 +81,32 @@ export class DocumentUpload {
       }
     });
 
+    // Subscribe to document loaded to capture metadata
+    eventBus.subscribe('documentLoaded', (payload) => {
+      const event = payload as DocumentLoadedEvent;
+      this.currentMetadata = event.metadata;
+    });
+
     // Subscribe to upload error events
     eventBus.subscribe('uploadError', (payload) => {
       const { message } = payload as { message: string };
       statusDiv.innerHTML = `<p class="status-error">❌ Error: ${message}</p>`;
+      this.currentJSONLD = null;
     });
 
     // Subscribe to structure ready events (success)
     eventBus.subscribe('structureReady', (payload) => {
       const event = payload as StructureReadyEvent;
-      const { parts } = event;
+      const { parts, documentIRI } = event;
+
+      // Generate JSON-LD
+      if (this.currentMetadata) {
+        this.currentJSONLD = exportDocumentToJSONLD(
+          documentIRI,
+          parts,
+          this.currentMetadata
+        );
+      }
 
       statusDiv.innerHTML = `
         <div class="status-success">
@@ -99,8 +118,44 @@ export class DocumentUpload {
             <li>Lists: ${parts.filter(p => p.type === 'list').length}</li>
             <li>Tables: ${parts.filter(p => p.type === 'table').length}</li>
           </ul>
+          <div class="json-ld-section">
+            <h3>BFO/IAO Knowledge Graph (JSON-LD)</h3>
+            <button id="downloadJSONLD" class="download-button">Download JSON-LD</button>
+            <button id="copyJSONLD" class="copy-button">Copy to Clipboard</button>
+            <pre id="jsonldOutput" class="jsonld-output"></pre>
+          </div>
         </div>
       `;
+
+      // Display JSON-LD
+      const outputElem = document.getElementById('jsonldOutput');
+      if (outputElem && this.currentJSONLD) {
+        outputElem.textContent = JSON.stringify(this.currentJSONLD, null, 2);
+      }
+
+      // Attach download button handler
+      const downloadBtn = document.getElementById('downloadJSONLD');
+      if (downloadBtn && this.currentJSONLD) {
+        downloadBtn.addEventListener('click', () => {
+          if (this.currentJSONLD && this.currentMetadata) {
+            downloadJSONLD(this.currentJSONLD, `${this.currentMetadata.title}-graph.jsonld`);
+          }
+        });
+      }
+
+      // Attach copy button handler
+      const copyBtn = document.getElementById('copyJSONLD');
+      if (copyBtn && this.currentJSONLD) {
+        copyBtn.addEventListener('click', async () => {
+          if (this.currentJSONLD) {
+            await navigator.clipboard.writeText(JSON.stringify(this.currentJSONLD, null, 2));
+            copyBtn.textContent = '✓ Copied!';
+            setTimeout(() => {
+              copyBtn.textContent = 'Copy to Clipboard';
+            }, 2000);
+          }
+        });
+      }
     });
 
     // Drag and drop support
