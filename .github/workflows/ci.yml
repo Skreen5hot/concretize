@@ -20,27 +20,13 @@ jobs:
         with:
           node-version: '18'
 
-      # UI tests: Only on main/dev branches (slower, more comprehensive)
-      - name: Install Chrome for UI tests
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        uses: browser-actions/setup-chrome@v2
-        with:
-          chrome-version: stable
+      - name: Install PWA dependencies
+        working-directory: ./pwa
+        run: npm ci
 
-      - name: Install UI test framework dependencies
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        run: |
-          cd pwa/src/test-framework
-          npm install
-
-      - name: Run UI tests (headless)
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        run: |
-          cd pwa/src/test-framework
-          export CHROME_PATH=$(which chrome)
-          npm test
-        env:
-          CI: true
+      - name: Run Phase 1 tests
+        working-directory: ./pwa
+        run: npm test -- --run --reporter=verbose
 
   # Deploy PWA to GitHub Pages
   deploy:
