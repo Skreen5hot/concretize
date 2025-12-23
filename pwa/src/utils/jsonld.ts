@@ -32,6 +32,11 @@ export function exportDocumentToJSONLD(
     createdDate?: Date;
   }
 ): Record<string, unknown> {
+  console.log('[jsonld] exportDocumentToJSONLD called with:', {
+    documentIRI,
+    partsCount: parts.length,
+    metadata
+  });
   const graph: JSONLDNode[] = [];
 
   // Add the document node
@@ -69,7 +74,7 @@ export function exportDocumentToJSONLD(
   }
 
   // Return with context
-  return {
+  const result = {
     '@context': {
       '@vocab': 'http://purl.obolibrary.org/obo/',
       'bfo': 'http://purl.obolibrary.org/obo/BFO_',
@@ -81,6 +86,8 @@ export function exportDocumentToJSONLD(
     },
     '@graph': graph,
   };
+  console.log('[jsonld] Generated JSON-LD with', graph.length, 'nodes');
+  return result;
 }
 
 /**
