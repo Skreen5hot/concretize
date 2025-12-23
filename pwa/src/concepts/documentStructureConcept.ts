@@ -195,8 +195,8 @@ export const documentStructureConcept: Concept = {
   name: 'documentStructureConcept',
   state,
   actions: {
-    parseStructure,
-    clearStructure,
+    parseStructure: parseStructure as (...args: unknown[]) => unknown,
+    clearStructure: clearStructure as (...args: unknown[]) => unknown,
   },
   notify: (event: string, payload: unknown) => {
     eventBus.emit(event, payload);

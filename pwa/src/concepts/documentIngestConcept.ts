@@ -132,8 +132,8 @@ export const documentIngestConcept: Concept = {
   name: 'documentIngestConcept',
   state,
   actions: {
-    uploadDocument,
-    clearDocument,
+    uploadDocument: uploadDocument as (...args: unknown[]) => Promise<unknown>,
+    clearDocument: clearDocument as (...args: unknown[]) => unknown,
   },
   notify: (event: string, payload: unknown) => {
     eventBus.emit(event, payload);

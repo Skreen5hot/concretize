@@ -72,14 +72,16 @@ describe.skip('Phase 1 Pipeline Integration (needs real .docx fixtures)', () => 
   test('pipeline handles document with mixed content', async () => {
     const mockFile = new File(
       [
-        '<h1>Main Title</h1>',
-        '<p>Introduction paragraph.</p>',
-        '<h2>Section 1</h2>',
-        '<p>Section content.</p>',
-        '<ul><li>Item 1</li><li>Item 2</li></ul>',
-        '<h2>Section 2</h2>',
-        '<p>More content.</p>',
-      ].join(''),
+        [
+          '<h1>Main Title</h1>',
+          '<p>Introduction paragraph.</p>',
+          '<h2>Section 1</h2>',
+          '<p>Section content.</p>',
+          '<ul><li>Item 1</li><li>Item 2</li></ul>',
+          '<h2>Section 2</h2>',
+          '<p>More content.</p>',
+        ].join(''),
+      ],
       'mixed-content.docx',
       {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -181,8 +183,12 @@ describe.skip('Phase 1 Pipeline Integration (needs real .docx fixtures)', () => 
 
     const events: string[] = [];
 
-    eventBus.subscribe('documentLoaded', () => events.push('documentLoaded'));
-    eventBus.subscribe('structureReady', () => events.push('structureReady'));
+    eventBus.subscribe('documentLoaded', () => {
+      events.push('documentLoaded');
+    });
+    eventBus.subscribe('structureReady', () => {
+      events.push('structureReady');
+    });
 
     await documentIngestConcept.actions.uploadDocument(mockFile);
     await new Promise((resolve) => setTimeout(resolve, 100));

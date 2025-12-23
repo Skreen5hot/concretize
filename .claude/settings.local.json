@@ -32,7 +32,8 @@
       "Bash(mv:*)",
       "Bash(curl:*)",
       "Bash(where:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

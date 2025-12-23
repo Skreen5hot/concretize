@@ -6,14 +6,24 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { documentStructureConcept } from '../../../src/concepts/documentStructureConcept';
 import { eventBus } from '../../../src/utils/eventBus';
-import type { DocumentLoadedEvent } from '../../../src/types/core';
+import type { DocumentLoadedEvent, DocumentPart, HierarchyNode } from '../../../src/types/core';
+
+// Type helper for accessing typed state
+interface DocumentStructureState {
+  currentDocumentIRI: string | null;
+  parts: DocumentPart[];
+  hierarchy: HierarchyNode | null;
+}
+
+const getState = () => documentStructureConcept.state as unknown as DocumentStructureState;
 
 describe('documentStructureConcept', () => {
   beforeEach(() => {
     // Reset state before each test
-    documentStructureConcept.state.currentDocumentIRI = null;
-    documentStructureConcept.state.parts = [];
-    documentStructureConcept.state.hierarchy = null;
+    const state = getState();
+    state.currentDocumentIRI = null;
+    state.parts = [];
+    state.hierarchy = null;
   });
 
   describe('parseStructure', () => {
@@ -33,11 +43,12 @@ describe('documentStructureConcept', () => {
 
       documentStructureConcept.actions.parseStructure(event);
 
-      expect(documentStructureConcept.state.parts).toHaveLength(2);
-      expect(documentStructureConcept.state.parts[0].type).toBe('paragraph');
-      expect(documentStructureConcept.state.parts[0].text).toBe('First paragraph');
-      expect(documentStructureConcept.state.parts[1].type).toBe('paragraph');
-      expect(documentStructureConcept.state.parts[1].text).toBe('Second paragraph');
+      const state = getState();
+      expect(state.parts).toHaveLength(2);
+      expect(state.parts[0].type).toBe('paragraph');
+      expect(state.parts[0].text).toBe('First paragraph');
+      expect(state.parts[1].type).toBe('paragraph');
+      expect(state.parts[1].text).toBe('Second paragraph');
     });
 
     test('extracts headings with correct levels', () => {
@@ -56,13 +67,13 @@ describe('documentStructureConcept', () => {
 
       documentStructureConcept.actions.parseStructure(event);
 
-      expect(documentStructureConcept.state.parts).toHaveLength(3);
-      expect(documentStructureConcept.state.parts[0].type).toBe('heading');
-      expect(documentStructureConcept.state.parts[0].level).toBe(1);
-      expect(documentStructureConcept.state.parts[1].type).toBe('heading');
-      expect(documentStructureConcept.state.parts[1].level).toBe(2);
-      expect(documentStructureConcept.state.parts[2].type).toBe('heading');
-      expect(documentStructureConcept.state.parts[2].level).toBe(3);
+      expect(getState().parts).toHaveLength(3);
+      expect(getState().parts[0].type).toBe('heading');
+      expect(getState().parts[0].level).toBe(1);
+      expect(getState().parts[1].type).toBe('heading');
+      expect(getState().parts[1].level).toBe(2);
+      expect(getState().parts[2].type).toBe('heading');
+      expect(getState().parts[2].level).toBe(3);
     });
 
     test('extracts lists', () => {
@@ -81,10 +92,10 @@ describe('documentStructureConcept', () => {
 
       documentStructureConcept.actions.parseStructure(event);
 
-      expect(documentStructureConcept.state.parts).toHaveLength(2);
-      expect(documentStructureConcept.state.parts[0].type).toBe('list');
-      expect(documentStructureConcept.state.parts[0].text).toContain('Item 1');
-      expect(documentStructureConcept.state.parts[1].type).toBe('list');
+      expect(getState().parts).toHaveLength(2);
+      expect(getState().parts[0].type).toBe('list');
+      expect(getState().parts[0].text).toContain('Item 1');
+      expect(getState().parts[1].type).toBe('list');
     });
 
     test('generates deterministic IRIs', () => {
@@ -103,12 +114,12 @@ describe('documentStructureConcept', () => {
 
       // Parse first time
       documentStructureConcept.actions.parseStructure(event);
-      const iri1 = documentStructureConcept.state.parts[0].iri;
+      const iri1 = getState().parts[0].iri;
 
       // Reset and parse again
-      documentStructureConcept.state.parts = [];
+      getState().parts = [];
       documentStructureConcept.actions.parseStructure(event);
-      const iri2 = documentStructureConcept.state.parts[0].iri;
+      const iri2 = getState().parts[0].iri;
 
       // IRIs should be identical
       expect(iri1).toBe(iri2);
@@ -133,12 +144,12 @@ describe('documentStructureConcept', () => {
 
       documentStructureConcept.actions.parseStructure(event);
 
-      expect(documentStructureConcept.state.parts).toHaveLength(5);
-      expect(documentStructureConcept.state.parts[0].sequenceIndex).toBe(0);
-      expect(documentStructureConcept.state.parts[1].sequenceIndex).toBe(1);
-      expect(documentStructureConcept.state.parts[2].sequenceIndex).toBe(2);
-      expect(documentStructureConcept.state.parts[3].sequenceIndex).toBe(3);
-      expect(documentStructureConcept.state.parts[4].sequenceIndex).toBe(4);
+      expect(getState().parts).toHaveLength(5);
+      expect(getState().parts[0].sequenceIndex).toBe(0);
+      expect(getState().parts[1].sequenceIndex).toBe(1);
+      expect(getState().parts[2].sequenceIndex).toBe(2);
+      expect(getState().parts[3].sequenceIndex).toBe(3);
+      expect(getState().parts[4].sequenceIndex).toBe(4);
     });
 
     test('emits structureReady event', () => {
@@ -196,17 +207,17 @@ describe('documentStructureConcept', () => {
       documentStructureConcept.actions.parseStructure(event);
 
       // Should only extract non-empty paragraphs
-      expect(documentStructureConcept.state.parts).toHaveLength(2);
-      expect(documentStructureConcept.state.parts[0].text).toBe('Content');
-      expect(documentStructureConcept.state.parts[1].text).toBe('More content');
+      expect(getState().parts).toHaveLength(2);
+      expect(getState().parts[0].text).toBe('Content');
+      expect(getState().parts[1].text).toBe('More content');
     });
   });
 
   describe('clearStructure', () => {
     test('resets state to initial values', () => {
       // Set some state
-      documentStructureConcept.state.currentDocumentIRI = 'http://example.org/doc_123';
-      documentStructureConcept.state.parts = [
+      getState().currentDocumentIRI = 'http://example.org/doc_123';
+      getState().parts = [
         {
           iri: 'http://example.org/part_1',
           type: 'paragraph',
@@ -215,7 +226,7 @@ describe('documentStructureConcept', () => {
           text: 'Test',
         },
       ];
-      documentStructureConcept.state.hierarchy = {
+      getState().hierarchy = {
         part: {} as any,
         children: [],
       };
@@ -224,9 +235,9 @@ describe('documentStructureConcept', () => {
       documentStructureConcept.actions.clearStructure();
 
       // Verify reset
-      expect(documentStructureConcept.state.currentDocumentIRI).toBeNull();
-      expect(documentStructureConcept.state.parts).toEqual([]);
-      expect(documentStructureConcept.state.hierarchy).toBeNull();
+      expect(getState().currentDocumentIRI).toBeNull();
+      expect(getState().parts).toEqual([]);
+      expect(getState().hierarchy).toBeNull();
     });
   });
 });

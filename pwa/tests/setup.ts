@@ -21,8 +21,7 @@ if (typeof File !== 'undefined' && !File.prototype.text) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
-      // @ts-expect-error - jsdom File implements enough for tests
-      reader.readAsText(this);
+      reader.readAsText(this as unknown as Blob);
     });
   };
 }
