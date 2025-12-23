@@ -32,11 +32,6 @@ export function exportDocumentToJSONLD(
     createdDate?: Date;
   }
 ): Record<string, unknown> {
-  console.log('[jsonld] exportDocumentToJSONLD called with:', {
-    documentIRI,
-    partsCount: parts.length,
-    metadata
-  });
   const graph: JSONLDNode[] = [];
 
   // Add the document node
@@ -86,7 +81,7 @@ export function exportDocumentToJSONLD(
     },
     '@graph': graph,
   };
-  console.log('[jsonld] Generated JSON-LD with', graph.length, 'nodes');
+
   return result;
 }
 

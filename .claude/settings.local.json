@@ -35,7 +35,8 @@
       "Bash(cat:*)",
       "Bash(npx tsc:*)",
       "Bash(output at this stage\"\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: Remove diagnostic console logging\n\n- Removed verbose logging from DocumentUpload component\n- Removed debug logs from JSON-LD export utility\n- Kept essential error logging for troubleshooting\n\nThe race condition fix is working correctly - JSON-LD now displays\nproperly with metadata flowing through the event pipeline.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

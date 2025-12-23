@@ -67,6 +67,7 @@ export class DocumentUpload {
     const statusDiv = document.getElementById('uploadStatus');
 
     if (!input || !statusDiv) {
+      console.error('[DocumentUpload] Failed to find input or statusDiv elements');
       return;
     }
 
@@ -97,17 +98,12 @@ export class DocumentUpload {
       // Store metadata from the event (fixes race condition)
       this.currentMetadata = metadata;
 
-      console.log('[DocumentUpload] structureReady event received');
-      console.log('[DocumentUpload] parts count:', parts.length);
-      console.log('[DocumentUpload] documentIRI:', documentIRI);
-
       // Generate JSON-LD
       this.currentJSONLD = exportDocumentToJSONLD(
         documentIRI,
         parts,
         metadata
       );
-      console.log('[DocumentUpload] JSON-LD generated:', !!this.currentJSONLD);
 
       statusDiv.innerHTML = `
         <div class="status-success">
