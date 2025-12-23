@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "cd pwa && npm test",
+    "test:all": "cd pwa && npm test",
     "build": "cd pwa && npm run build",
     "dev": "cd pwa && npm run dev"
   },
