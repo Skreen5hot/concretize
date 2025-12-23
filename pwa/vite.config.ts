@@ -36,7 +36,7 @@ export default defineConfig({
 
   plugins: [
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['offline.html'],
       manifest: {
         name: 'Concretize: Document to BFO Knowledge Graph',

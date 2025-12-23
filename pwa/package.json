@@ -1,6 +1,6 @@
 {
   "name": "concretize-pwa",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Document-to-BFO Knowledge Graph Progressive Web App",
   "type": "module",
   "scripts": {
