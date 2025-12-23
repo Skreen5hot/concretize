@@ -2,30 +2,31 @@
  * Main Entry Point
  *
  * Initializes the Concretize PWA application
+ * Phase 1: Document Ingestion & Structure Extraction
  */
 
 import { eventBus } from './utils/eventBus';
+import { initializePhase1Synchronizations } from './synchronizations/phase1Sync';
+import { DocumentUpload } from './ui/DocumentUpload';
+import './styles/main.css';
 
-console.log('Concretize PWA - Phase 0 Foundation');
-console.log('Event Bus initialized:', eventBus);
+console.log('Concretize PWA - Phase 1: Document Ingestion');
 
 // Enable debug mode for development
 eventBus.setDebug(true);
 
-// Test event emission
-eventBus.subscribe('app:ready', (payload) => {
-  console.log('Application ready:', payload);
-});
+// Initialize Phase 1 synchronizations
+initializePhase1Synchronizations();
 
+// Initialize UI components
+const documentUpload = new DocumentUpload();
+documentUpload.render('upload-section');
+
+// Application ready
 eventBus.emit('app:ready', {
-  phase: 0,
-  status: 'Foundation Complete',
+  phase: 1,
+  status: 'Document Ingestion Active',
   timestamp: new Date().toISOString()
 });
 
-// Update status in UI
-const statusElement = document.getElementById('status');
-if (statusElement) {
-  statusElement.textContent = 'Phase 0 Foundation - Event Bus Active';
-  statusElement.style.color = '#28a745';
-}
+console.log('Phase 1 initialized - Ready to process documents')

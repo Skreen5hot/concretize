@@ -28,7 +28,11 @@
       "Bash(npm install:*)",
       "Bash(node --test:*)",
       "Bash(grep:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(mv:*)",
+      "Bash(curl:*)",
+      "Bash(where:*)",
+      "Bash(cat:*)"
     ]
   }
 }

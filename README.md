@@ -76,7 +76,7 @@ concretize/
 ├── pwa/                          🎯 Active PWA Application
 │   ├── src/
 │   │   ├── main.ts               Entry point
-│   │   ├── types/core.ts         TypeScript types (400+ lines)
+│   │   ├── types/core.ts         TypeScript types + IAO URIs (450+ lines)
 │   │   ├── utils/                Pure utility functions
 │   │   │   ├── eventBus.ts       Event-driven communication
 │   │   │   ├── text.ts           Text processing & IRI minting
@@ -94,9 +94,14 @@ concretize/
 │   ├── ci.yml                    Legacy tests + PWA deployment
 │   └── pwa-ci.yml                PWA testing & validation
 │
+├── ontologies/                   Reference ontologies (BFO/IAO)
+│   ├── bfo-core.ttl             BFO 2020 reference
+│   ├── iao-core.owl             IAO 2022-11-07 reference
+│   ├── examples/                Example domain ontologies
+│   └── README.md                Ontology documentation
+│
 ├── POS_Proof_of_concept/         POS lexicon (for Phase 2)
 │
-├── bfo-core.ttl                  BFO ontology reference
 ├── agenticDevlopment.md          Architecture guide
 ├── requirments.md                BFO/IAO requirements
 ├── phasedProjectPlan.md          6-phase roadmap

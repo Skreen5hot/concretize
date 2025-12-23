@@ -4,6 +4,49 @@
  */
 
 // ============================================================================
+// IAO Class URIs (Information Artifact Ontology)
+// ============================================================================
+
+/**
+ * IAO class URIs used for document structure modeling
+ * Reference: http://purl.obolibrary.org/obo/iao.owl
+ * See: /ontologies/README.md for full documentation
+ */
+export const IAO_URIS = {
+  // Top-level document classes
+  INFORMATION_CONTENT_ENTITY: 'http://purl.obolibrary.org/obo/IAO_0000030',
+
+  // Document structure classes
+  DOCUMENT_PART: 'http://purl.obolibrary.org/obo/IAO_0000314',
+  PARAGRAPH: 'http://purl.obolibrary.org/obo/IAO_0000302',
+  HEADING: 'http://purl.obolibrary.org/obo/IAO_0000304',
+  SECTION: 'http://purl.obolibrary.org/obo/IAO_0000315',
+  LIST: 'http://purl.obolibrary.org/obo/IAO_0000320',
+  TABLE: 'http://purl.obolibrary.org/obo/IAO_0000306',
+
+  // Document-level properties
+  HAS_DOCUMENT_PART: 'http://purl.obolibrary.org/obo/IAO_0000219',
+  IS_PART_OF: 'http://purl.obolibrary.org/obo/BFO_0000050',
+
+  // Aboutness relations
+  IS_ABOUT: 'http://purl.obolibrary.org/obo/IAO_0000136',
+  MENTIONS: 'http://purl.obolibrary.org/obo/IAO_0000142',
+} as const;
+
+/**
+ * Map document part types to IAO class URIs
+ */
+export function getIAOTypeURI(partType: DocumentPart['type']): string {
+  const typeMap: Record<DocumentPart['type'], string> = {
+    paragraph: IAO_URIS.PARAGRAPH,
+    heading: IAO_URIS.HEADING,
+    list: IAO_URIS.LIST,
+    table: IAO_URIS.TABLE,
+  };
+  return typeMap[partType] || IAO_URIS.DOCUMENT_PART;
+}
+
+// ============================================================================
 // Document Identity and Structure
 // ============================================================================
 
