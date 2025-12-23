@@ -45,26 +45,20 @@ export default defineConfig({
         theme_color: '#1a73e8',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
+        start_url: '/concretize/',
+        scope: '/concretize/',
         icons: [
           {
-            src: '/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable'
-          },
-          {
-            src: '/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
+            src: 'icon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
             purpose: 'any maskable'
           }
         ],
         categories: ['productivity', 'utilities', 'education']
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,wasm,json}'],
+        globPatterns: ['**/*.{js,css,html,wasm,json,svg}'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         runtimeCaching: [
           {
@@ -82,7 +76,7 @@ export default defineConfig({
             }
           }
         ],
-        navigateFallback: '/offline.html',
+        navigateFallback: '/concretize/offline.html',
         navigateFallbackDenylist: [/^\/api/]
       },
       devOptions: {

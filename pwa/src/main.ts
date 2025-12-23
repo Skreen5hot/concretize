@@ -22,11 +22,4 @@ initializePhase1Synchronizations();
 const documentUpload = new DocumentUpload();
 documentUpload.render('upload-section');
 
-// Application ready
-eventBus.emit('app:ready', {
-  phase: 1,
-  status: 'Document Ingestion Active',
-  timestamp: new Date().toISOString()
-});
-
-console.log('Phase 1 initialized - Ready to process documents')
+console.log('Phase 1 initialized - Ready to process documents');
