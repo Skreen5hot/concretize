@@ -172,6 +172,7 @@ function parseStructure(event: DocumentLoadedEvent): void {
     parts,
     partList: partListIRI,
     hierarchy,
+    metadata, // Include metadata in event to prevent race condition
   };
 
   console.log(`Parsed ${parts.length} document parts from "${metadata.title}"`);

@@ -161,6 +161,7 @@ export interface StructureReadyEvent {
   parts: DocumentPart[];
   partList: string;
   hierarchy: HierarchyNode;
+  metadata: DocumentMetadata; // Added to fix race condition - metadata flows through event chain
 }
 
 export interface AnalysisCompleteEvent {

@@ -81,41 +81,33 @@ export class DocumentUpload {
       }
     });
 
-    // Subscribe to document loaded to capture metadata
-    eventBus.subscribe('documentLoaded', (payload) => {
-      const event = payload as DocumentLoadedEvent;
-      this.currentMetadata = event.metadata;
-      console.log('[DocumentUpload] Metadata captured:', this.currentMetadata);
-    });
-
     // Subscribe to upload error events
     eventBus.subscribe('uploadError', (payload) => {
       const { message } = payload as { message: string };
       statusDiv.innerHTML = `<p class="status-error">❌ Error: ${message}</p>`;
       this.currentJSONLD = null;
+      this.currentMetadata = null;
     });
 
     // Subscribe to structure ready events (success)
     eventBus.subscribe('structureReady', (payload) => {
       const event = payload as StructureReadyEvent;
-      const { parts, documentIRI } = event;
+      const { parts, documentIRI, metadata } = event;
+
+      // Store metadata from the event (fixes race condition)
+      this.currentMetadata = metadata;
 
       console.log('[DocumentUpload] structureReady event received');
-      console.log('[DocumentUpload] currentMetadata:', this.currentMetadata);
       console.log('[DocumentUpload] parts count:', parts.length);
       console.log('[DocumentUpload] documentIRI:', documentIRI);
 
       // Generate JSON-LD
-      if (this.currentMetadata) {
-        this.currentJSONLD = exportDocumentToJSONLD(
-          documentIRI,
-          parts,
-          this.currentMetadata
-        );
-        console.log('[DocumentUpload] JSON-LD generated:', !!this.currentJSONLD);
-      } else {
-        console.error('[DocumentUpload] Cannot generate JSON-LD: metadata is null');
-      }
+      this.currentJSONLD = exportDocumentToJSONLD(
+        documentIRI,
+        parts,
+        metadata
+      );
+      console.log('[DocumentUpload] JSON-LD generated:', !!this.currentJSONLD);
 
       statusDiv.innerHTML = `
         <div class="status-success">
@@ -138,38 +130,17 @@ export class DocumentUpload {
 
       // Display JSON-LD
       const outputElem = document.getElementById('jsonldOutput');
-      console.log('[DocumentUpload] outputElem found:', !!outputElem);
-      console.log('[DocumentUpload] currentJSONLD exists:', !!this.currentJSONLD);
       if (outputElem && this.currentJSONLD) {
         outputElem.textContent = JSON.stringify(this.currentJSONLD, null, 2);
-        console.log('[DocumentUpload] JSON-LD displayed in text box');
-      } else {
-        console.error('[DocumentUpload] Failed to display JSON-LD:', {
-          outputElem: !!outputElem,
-          currentJSONLD: !!this.currentJSONLD
-        });
       }
 
       // Attach download button handler
       const downloadBtn = document.getElementById('downloadJSONLD');
-      console.log('[DocumentUpload] downloadBtn found:', !!downloadBtn);
-      if (downloadBtn && this.currentJSONLD) {
+      if (downloadBtn && this.currentJSONLD && this.currentMetadata) {
         downloadBtn.addEventListener('click', () => {
-          console.log('[DocumentUpload] Download button clicked');
           if (this.currentJSONLD && this.currentMetadata) {
-            console.log('[DocumentUpload] Triggering download...');
             downloadJSONLD(this.currentJSONLD, `${this.currentMetadata.title}-graph.jsonld`);
-          } else {
-            console.error('[DocumentUpload] Cannot download: missing data', {
-              currentJSONLD: !!this.currentJSONLD,
-              currentMetadata: !!this.currentMetadata
-            });
           }
-        });
-      } else {
-        console.error('[DocumentUpload] Failed to attach download handler:', {
-          downloadBtn: !!downloadBtn,
-          currentJSONLD: !!this.currentJSONLD
         });
       }
 
